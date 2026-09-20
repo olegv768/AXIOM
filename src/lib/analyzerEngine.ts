@@ -354,17 +354,22 @@ export async function runFullAudit(
   targetMarket: string,
   apiKey: string
 ): Promise<ValidationReport> {
-  // Встроенный ключ как запасной вариант (пользователь может перезаписать своим ключом)
-  const BUILT_IN_KEY = 'AIzaSyCHLgKJmYhNIdkveRVQ8KlPIOkMnLraz9I';
-  const keyToUse = apiKey.trim() || import.meta.env.VITE_GEMINI_API_KEY || BUILT_IN_KEY;
+  const keyToUse = apiKey.trim() || import.meta.env.VITE_GEMINI_API_KEY || '';
 
   if (keyToUse) {
     try {
       return await analyzeWithGemini(ideaText, targetMarket, keyToUse, true);
     } catch (err) {
-      console.error('Gemini API call failed:', err);
+      console.warn('Gemini API call failed, using heuristic engine:', err);
       const fallback = generateLocalFallback(ideaText, targetMarket);
-      fallback.quickTakeaway = `Ошибка вызова Gemini API (${(err as Error).message}). Проверьте правильность ключа.`;
+      const errMsg = (err as Error).message || '';
+      if (errMsg.includes('403') || errMsg.includes('leaked') || errMsg.includes('PERMISSION_DENIED')) {
+        fallback.quickTakeaway = 'Внимание: указанный Gemini API ключ был отозван или заблокирован Google (403 Leaked Key). Создайте новый бесплатный ключ на https://aistudio.google.com/app/apikey и укажите его в настройках.';
+      } else if (errMsg.includes('429') || errMsg.includes('quota')) {
+        fallback.quickTakeaway = 'Превышен лимит запросов к Gemini API (Quota Exceeded). Сгенерирован эвристический отчет.';
+      } else {
+        fallback.quickTakeaway = `Запрос к Gemini API: ${errMsg}. Сгенерирован эвристический отчет.`;
+      }
       return fallback;
     }
   }
