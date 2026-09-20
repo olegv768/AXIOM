@@ -204,7 +204,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             </div>
             <div className="space-y-1.5 text-xs">
               {[
-                [t('footer_tech_engine'), 'Gemini 3.6 Flash'],
+                [t('footer_tech_engine'), 'Gemini 3.8 Fast'],
                 [t('footer_tech_arch'), 'React 18 + Vite'],
                 [t('footer_tech_types'), 'Strict TypeScript'],
               ].map(([label, value]) => (
