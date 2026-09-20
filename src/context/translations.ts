@@ -35,7 +35,7 @@ export const TRANSLATIONS = {
     footer_scroll_top: 'Наверх страницы',
 
     // HeroInput
-    hero_badge_label: 'AXIOM // ВАЛИДАТОР 01',
+    hero_badge_label: 'AXIOM // ВАЛИДАТОР',
     hero_badge_sub: 'ДВИЖОК ТЕЛЕМЕТРИИ',
     hero_headline_1: 'ТВОЯ ИДЕЯ',
     hero_headline_2: 'РЕАЛЬНО УНИКАЛЬНА?',
@@ -163,7 +163,7 @@ export const TRANSLATIONS = {
     footer_scroll_top: 'Back to top',
 
     // HeroInput
-    hero_badge_label: 'AXIOM // VALIDATOR 01',
+    hero_badge_label: 'AXIOM // VALIDATOR',
     hero_badge_sub: 'TELEMETRY ENGINE',
     hero_headline_1: 'IS YOUR IDEA',
     hero_headline_2: 'ACTUALLY UNIQUE?',

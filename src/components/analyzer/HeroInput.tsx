@@ -433,9 +433,7 @@ export const HeroInput: React.FC<HeroInputProps> = ({
       <section className="space-y-8 pt-8 border-t border-white/[0.06]">
         <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4">
           <div>
-            <span className="text-[10px] font-mono uppercase tracking-widest text-neutral-400 block mb-1">
-              {t('how_label')}
-            </span>
+
             <h2 className="text-2xl sm:text-3xl font-display font-bold uppercase text-white tracking-tight">
               {t('how_title')}
             </h2>

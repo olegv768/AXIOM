@@ -66,9 +66,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               AXIOM
             </span>
-            <span className="text-[10px] font-mono tracking-wider" style={{ color: 'var(--text-muted)' }}>
-              / 01
-            </span>
           </div>
         </button>
 
