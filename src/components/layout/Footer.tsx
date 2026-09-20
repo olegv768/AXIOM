@@ -12,6 +12,7 @@ import {
 import { NavView } from './Navbar';
 import { useLanguage } from '../../context/LanguageContext';
 import { useTheme } from '../../context/ThemeContext';
+import { ScrollReveal } from '../ui/ScrollReveal';
 
 interface FooterProps {
   onNavigate: (view: NavView) => void;
@@ -58,7 +59,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-12 pb-10 space-y-12">
 
-        {/* 1. CTA Banner */}
+        <ScrollReveal variant="scale-up" duration={700}>
         <div
           className="relative overflow-hidden p-6 sm:p-8 rounded-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-xl"
           style={{
@@ -95,8 +96,10 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
           </button>
         </div>
+        </ScrollReveal>
 
         {/* 2. Directory Grid */}
+        <ScrollReveal variant="fade-up" duration={700} delay={100}>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 pt-4">
 
           {/* Col 1: Brand & Mission */}
@@ -224,8 +227,9 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             </div>
           </div>
         </div>
+        </ScrollReveal>
 
-        {/* 3. Bottom Bar */}
+        <ScrollReveal variant="fade-in" duration={600} delay={200}>
         <div
           className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-[11px]"
           style={{ borderTop: `1px solid var(--border-subtle)`, color: 'var(--text-muted)' }}
@@ -249,6 +253,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             <ArrowUp className="w-3.5 h-3.5 transition-transform duration-200 group-hover:-translate-y-0.5" />
           </button>
         </div>
+        </ScrollReveal>
       </div>
     </footer>
   );

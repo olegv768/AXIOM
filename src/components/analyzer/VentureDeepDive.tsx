@@ -1,6 +1,7 @@
 import React from 'react';
 import { UnitEconomics, GtmStep, MarketSizing } from '@/lib/types';
 import { Card3D } from '../ui/Card3D';
+import { ScrollReveal } from '../ui/ScrollReveal';
 import { Calculator, Rocket, PieChart, DollarSign, Clock, ShieldAlert } from 'lucide-react';
 
 interface VentureDeepDiveProps {
@@ -19,6 +20,7 @@ export const VentureDeepDive: React.FC<VentureDeepDiveProps> = ({
       {/* Unit Economics & Market Sizing Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* Unit Economics Card */}
+        <ScrollReveal variant="fade-right" duration={700}>
         <div className="lg:col-span-7">
           <Card3D depth={5} className="h-full p-5 sm:p-6 flex flex-col justify-between">
             <div>
@@ -80,8 +82,10 @@ export const VentureDeepDive: React.FC<VentureDeepDiveProps> = ({
             </div>
           </Card3D>
         </div>
+        </ScrollReveal>
 
         {/* Market Sizing Card */}
+        <ScrollReveal variant="fade-left" duration={700} delay={150}>
         <div className="lg:col-span-5">
           <Card3D depth={5} className="h-full p-5 sm:p-6 flex flex-col justify-between">
             <div>
@@ -123,10 +127,12 @@ export const VentureDeepDive: React.FC<VentureDeepDiveProps> = ({
             </p>
           </Card3D>
         </div>
+        </ScrollReveal>
       </div>
 
       {/* Go-To-Market Playbook Card */}
       {gtmPlaybook && gtmPlaybook.length > 0 && (
+        <ScrollReveal variant="slide-up" duration={700}>
         <Card3D depth={4} className="p-5 sm:p-6">
           <div className="flex items-center justify-between pb-3 mb-4 border-b border-white/[0.06]">
             <div className="flex items-center gap-2">
@@ -162,6 +168,7 @@ export const VentureDeepDive: React.FC<VentureDeepDiveProps> = ({
             ))}
           </div>
         </Card3D>
+        </ScrollReveal>
       )}
     </div>
   );

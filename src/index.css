@@ -67,6 +67,10 @@
     --spatial-grid: rgba(0, 0, 0, 0.04);
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     background-color: var(--bg-body);
@@ -75,6 +79,20 @@
     letter-spacing: -0.012em;
     cursor: default;
     transition: background-color 0.25s ease, color 0.25s ease;
+    animation: pageEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes pageEntrance {
+    0% {
+      opacity: 0;
+      transform: translateY(12px);
+      filter: blur(4px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+      filter: blur(0);
+    }
   }
 
   /* Display Font (Headings, Statements, Large metrics) */

@@ -8,6 +8,7 @@ import { SimilarWebsitesShowcase } from './SimilarWebsitesShowcase';
 import { VentureDeepDive } from './VentureDeepDive';
 import { StartupStressLab } from './StartupStressLab';
 import { NeonButton } from '../ui/NeonButton';
+import { ScrollReveal } from '../ui/ScrollReveal';
 import {
   Copy,
   Check,
@@ -49,6 +50,7 @@ export const DashboardResults: React.FC<DashboardResultsProps> = ({ report, onRe
   return (
     <div className="w-full max-w-5xl mx-auto py-8 px-4 sm:px-6 space-y-7">
       {/* Precision Header & Action Bar */}
+      <ScrollReveal variant="fade-down" duration={600}>
       <div className="p-4 sm:p-5 rounded-xl bg-[#0c0e14] border border-white/[0.08] shadow-hardware flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
@@ -92,8 +94,10 @@ export const DashboardResults: React.FC<DashboardResultsProps> = ({ report, onRe
           </NeonButton>
         </div>
       </div>
+      </ScrollReveal>
 
       {/* Row 1: Telemetry Gauge & Viability Radar */}
+      <ScrollReveal variant="fade-up" duration={700} delay={100}>
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* Uniqueness Gauge Card */}
         <div className="lg:col-span-5">
@@ -136,8 +140,10 @@ export const DashboardResults: React.FC<DashboardResultsProps> = ({ report, onRe
           </Card3D>
         </div>
       </div>
+      </ScrollReveal>
 
       {/* Row 1.5: INTERACTIVE STRESS-TEST LAB */}
+      <ScrollReveal variant="scale-up" duration={700}>
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -152,18 +158,24 @@ export const DashboardResults: React.FC<DashboardResultsProps> = ({ report, onRe
         </div>
         <StartupStressLab ideaTitle={report.ideaText.substring(0, 32)} />
       </div>
+      </ScrollReveal>
 
       {/* Row 2: REAL SIMILAR WEBSITES & STARTUPS SHOWCASE */}
-      <SimilarWebsitesShowcase websites={report.similarWebsites} />
+      <ScrollReveal variant="fade-up" duration={700}>
+        <SimilarWebsitesShowcase websites={report.similarWebsites} />
+      </ScrollReveal>
 
       {/* Row 3: VENTURE DEEP DIVE (Unit Economics + TAM/SAM/SOM + GTM) */}
-      <VentureDeepDive
-        unitEconomics={report.unitEconomics}
-        gtmPlaybook={report.gtmPlaybook}
-        marketSizing={report.marketSizing}
-      />
+      <ScrollReveal variant="blur-in" duration={800}>
+        <VentureDeepDive
+          unitEconomics={report.unitEconomics}
+          gtmPlaybook={report.gtmPlaybook}
+          marketSizing={report.marketSizing}
+        />
+      </ScrollReveal>
 
       {/* Row 4: Ruthless Critique (Беспристрастная критика) */}
+      <ScrollReveal variant="fade-up" duration={700}>
       <Card3D depth={4} className="p-5 sm:p-6">
         <div className="flex items-center justify-between pb-3 mb-4 border-b border-white/[0.06]">
           <div className="flex items-center gap-2">
@@ -213,8 +225,10 @@ export const DashboardResults: React.FC<DashboardResultsProps> = ({ report, onRe
           </div>
         </div>
       </Card3D>
+      </ScrollReveal>
 
       {/* Row 5: Competitor Dossiers with 3D Tilt */}
+      <ScrollReveal variant="fade-left" duration={700}>
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -276,8 +290,10 @@ export const DashboardResults: React.FC<DashboardResultsProps> = ({ report, onRe
           ))}
         </div>
       </div>
+      </ScrollReveal>
 
       {/* Row 6: Red Flags (Точки отказа) */}
+      <ScrollReveal variant="slide-up" duration={700}>
       <Card3D depth={4} className="p-5 sm:p-6">
         <div className="flex items-center justify-between pb-3 mb-4 border-b border-white/[0.06]">
           <div className="flex items-center gap-2">
@@ -319,8 +335,10 @@ export const DashboardResults: React.FC<DashboardResultsProps> = ({ report, onRe
           ))}
         </div>
       </Card3D>
+      </ScrollReveal>
 
       {/* Row 7: Blue Ocean Pivots */}
+      <ScrollReveal variant="fade-right" duration={700}>
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -370,8 +388,10 @@ export const DashboardResults: React.FC<DashboardResultsProps> = ({ report, onRe
           ))}
         </div>
       </div>
+      </ScrollReveal>
 
       {/* Bottom Bar */}
+      <ScrollReveal variant="fade-up" duration={600} delay={100}>
       <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-white/[0.06] text-xs text-neutral-500">
         <span>Отчет сохранён в истории.</span>
         <div className="flex items-center gap-2.5">
@@ -393,6 +413,7 @@ export const DashboardResults: React.FC<DashboardResultsProps> = ({ report, onRe
           </NeonButton>
         </div>
       </div>
+      </ScrollReveal>
     </div>
   );
 };

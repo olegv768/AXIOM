@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { NeonButton } from '../ui/NeonButton';
 import { StartupStressLab } from './StartupStressLab';
+import { ScrollReveal } from '../ui/ScrollReveal';
 import { useLanguage } from '../../context/LanguageContext';
 import { useTheme } from '../../context/ThemeContext';
 import {
@@ -428,6 +429,7 @@ export const HeroInput: React.FC<HeroInputProps> = ({
       {/* ============================================================ */}
       {/* 2. HOW IT WORKS (3 Steps Editorial Flow) */}
       {/* ============================================================ */}
+      <ScrollReveal variant="fade-up" duration={700}>
       <section className="space-y-8 pt-8 border-t border-white/[0.06]">
         <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4">
           <div>
@@ -441,6 +443,7 @@ export const HeroInput: React.FC<HeroInputProps> = ({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <ScrollReveal variant="fade-up" staggerIndex={0} staggerDelay={120}>
           <div className="p-6 rounded-2xl bg-[#0c0e14] border border-white/[0.08] space-y-4">
             <div className="w-9 h-9 rounded-lg bg-white/[0.05] border border-white/[0.1] flex items-center justify-center font-mono text-sm font-bold text-white">
               01
@@ -457,6 +460,9 @@ export const HeroInput: React.FC<HeroInputProps> = ({
               ● SEMANTIC VECTOR EXTRACTION
             </div>
           </div>
+          </ScrollReveal>
+
+          <ScrollReveal variant="fade-up" staggerIndex={1} staggerDelay={120}>
 
           <div className="p-6 rounded-2xl bg-[#0c0e14] border border-white/[0.08] space-y-4">
             <div className="w-9 h-9 rounded-lg bg-white/[0.05] border border-white/[0.1] flex items-center justify-center font-mono text-sm font-bold text-white">
@@ -474,6 +480,9 @@ export const HeroInput: React.FC<HeroInputProps> = ({
               ● REAL-TIME WEB SEARCH TELEMETRY
             </div>
           </div>
+          </ScrollReveal>
+
+          <ScrollReveal variant="fade-up" staggerIndex={2} staggerDelay={120}>
 
           <div className="p-6 rounded-2xl bg-[#0c0e14] border border-white/[0.08] space-y-4">
             <div className="w-9 h-9 rounded-lg bg-white/[0.05] border border-white/[0.1] flex items-center justify-center font-mono text-sm font-bold text-white">
@@ -491,12 +500,15 @@ export const HeroInput: React.FC<HeroInputProps> = ({
               ● 5-AXIS VIABILITY MATRIX
             </div>
           </div>
+          </ScrollReveal>
         </div>
       </section>
+      </ScrollReveal>
 
       {/* ============================================================ */}
       {/* 3. INTERACTIVE SIMULATION & STRESS-TEST LAB */}
       {/* ============================================================ */}
+      <ScrollReveal variant="scale-up" duration={700}>
       <section className="space-y-6 pt-4">
         <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-3">
           <div>
@@ -512,10 +524,12 @@ export const HeroInput: React.FC<HeroInputProps> = ({
         {/* Live Interactive Stress & Viability Simulator */}
         <StartupStressLab ideaTitle={ideaText.trim() ? ideaText.trim().substring(0, 30) : 'YOUR STARTUP'} />
       </section>
+      </ScrollReveal>
 
       {/* ============================================================ */}
       {/* 4. UNIQUENESS ENGINE (Defensibility & Architecture) */}
       {/* ============================================================ */}
+      <ScrollReveal variant="blur-in" duration={800}>
       <section className="space-y-8 pt-8 border-t border-white/[0.06]">
         <div>
           <h2 className="text-2xl sm:text-3xl font-display font-bold uppercase text-white tracking-tight">
@@ -561,10 +575,12 @@ export const HeroInput: React.FC<HeroInputProps> = ({
           </div>
         </div>
       </section>
+      </ScrollReveal>
 
       {/* ============================================================ */}
       {/* 5. FINAL STATEMENT CTA */}
       {/* ============================================================ */}
+      <ScrollReveal variant="slide-up" duration={800}>
       <section className="text-center py-12 px-6 rounded-3xl bg-gradient-to-b from-[#0e1018] to-[#08090c] border border-white/[0.1] space-y-6">
         <h2 className="text-3xl sm:text-5xl lg:text-6xl font-display font-extrabold uppercase text-white tracking-tight leading-[1.05] max-w-2xl mx-auto">
           DON'T JUST BUILD AN IDEA.
@@ -588,6 +604,7 @@ export const HeroInput: React.FC<HeroInputProps> = ({
           </NeonButton>
         </div>
       </section>
+      </ScrollReveal>
     </div>
   );
 };

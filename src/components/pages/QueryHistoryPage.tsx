@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { ValidationReport } from '@/lib/types';
 import { useLanguage } from '../../context/LanguageContext';
+import { ScrollReveal } from '../ui/ScrollReveal';
 import {
   Search,
   Filter,
@@ -116,7 +117,7 @@ export const QueryHistoryPage: React.FC<QueryHistoryPageProps> = ({
         </div>
       </div>
 
-      {/* Search & Filter Toolbar */}
+      <ScrollReveal variant="fade-up" duration={600} delay={50}>
       <div className="p-4 rounded-xl bg-[#0c0e14] border border-white/[0.08] space-y-3.5">
         <div className="flex flex-col sm:flex-row gap-3">
           {/* Search Input */}
@@ -213,6 +214,7 @@ export const QueryHistoryPage: React.FC<QueryHistoryPageProps> = ({
           </div>
         </div>
       </div>
+      </ScrollReveal>
 
       {/* Query Count Bar */}
       <div className="flex items-center justify-between text-xs font-mono text-neutral-500 px-1">
@@ -244,15 +246,21 @@ export const QueryHistoryPage: React.FC<QueryHistoryPageProps> = ({
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {filteredReports.map((report) => {
+          {filteredReports.map((report, idx) => {
             const dateStr = new Date(report.createdAt).toLocaleDateString(lang === 'en' ? 'en-US' : 'ru-RU', {
               day: 'numeric',
               month: 'short',
             });
 
             return (
-              <div
+              <ScrollReveal
                 key={report.id}
+                variant="fade-up"
+                duration={500}
+                staggerIndex={idx % 6}
+                staggerDelay={70}
+              >
+              <div
                 className="group p-5 rounded-xl bg-[#0c0e14] hover:bg-[#10131c] border border-white/[0.07] hover:border-white/[0.16] transition-all flex flex-col justify-between gap-4 relative shadow-sm"
               >
                 {/* Card Top: Segment & Uniqueness */}
@@ -334,6 +342,7 @@ export const QueryHistoryPage: React.FC<QueryHistoryPageProps> = ({
                   </button>
                 </div>
               </div>
+              </ScrollReveal>
             );
           })}
         </div>

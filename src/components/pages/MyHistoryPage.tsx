@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 
 import { useLanguage } from '../../context/LanguageContext';
+import { ScrollReveal } from '../ui/ScrollReveal';
 
 interface MyHistoryPageProps {
   history?: ValidationReport[];
@@ -57,6 +58,7 @@ export const MyHistoryPage: React.FC<MyHistoryPageProps> = ({
   return (
     <div className="w-full max-w-6xl mx-auto py-8 px-4 sm:px-6 space-y-8 animate-fadeIn">
       {/* Main Narrative Card with Face Photo */}
+      <ScrollReveal variant="fade-up" duration={700}>
       <div className="p-6 sm:p-7 rounded-2xl bg-[#0c0e14] border border-white/[0.08] space-y-4 shadow-xl">
         <div className="flex items-center justify-between border-b border-white/[0.06] pb-3">
           <div className="flex items-center gap-2 text-xs font-mono text-neutral-400 uppercase tracking-wider">
@@ -100,6 +102,7 @@ export const MyHistoryPage: React.FC<MyHistoryPageProps> = ({
           </div>
         </div>
       </div>
+      </ScrollReveal>
 
       {/* 3. Key Achievements Grid */}
       <div className="space-y-3">
@@ -109,6 +112,7 @@ export const MyHistoryPage: React.FC<MyHistoryPageProps> = ({
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Card 1: Infomatrix 2nd Place */}
+          <ScrollReveal variant="fade-up" staggerIndex={0} staggerDelay={100}>
           <div className="p-5 rounded-xl bg-[#0c0e14] border border-sky-500/20 relative overflow-hidden space-y-3 group hover:border-sky-500/40 transition-all">
             <div className="w-10 h-10 rounded-lg bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center">
               <Medal className="w-5 h-5" />
@@ -130,8 +134,10 @@ export const MyHistoryPage: React.FC<MyHistoryPageProps> = ({
               <span>International Stage</span> • <span>Silver Medal</span> • <span>System Design</span>
             </div>
           </div>
+          </ScrollReveal>
 
           {/* Card 2: Alem AI Hackathon 3rd Place */}
+          <ScrollReveal variant="fade-up" staggerIndex={1} staggerDelay={100}>
           <div className="p-5 rounded-xl bg-[#0c0e14] border border-amber-500/20 relative overflow-hidden space-y-3 group hover:border-amber-500/40 transition-all">
             <div className="w-10 h-10 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center">
               <Trophy className="w-5 h-5" />
@@ -153,8 +159,10 @@ export const MyHistoryPage: React.FC<MyHistoryPageProps> = ({
               <span>Alem AI</span> • <span>10 Days Hackathon</span> • <span>AI Solution</span>
             </div>
           </div>
+          </ScrollReveal>
 
           {/* Card 3: Creative 3D & Data Visualization */}
+          <ScrollReveal variant="fade-up" staggerIndex={2} staggerDelay={100}>
           <div className="p-5 rounded-xl bg-[#0c0e14] border border-purple-500/20 relative overflow-hidden space-y-3 group hover:border-purple-500/40 transition-all">
             <div className="w-10 h-10 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center">
               <Layers className="w-5 h-5" />
@@ -176,8 +184,10 @@ export const MyHistoryPage: React.FC<MyHistoryPageProps> = ({
               <span>Three.js (3D)</span> • <span>D3.js (Data Viz)</span> • <span>Interactive Canvas</span>
             </div>
           </div>
+          </ScrollReveal>
 
           {/* Card 4: React, TypeScript, Vite & SEO */}
+          <ScrollReveal variant="fade-up" staggerIndex={3} staggerDelay={100}>
           <div className="p-5 rounded-xl bg-[#0c0e14] border border-emerald-500/20 relative overflow-hidden space-y-3 group hover:border-emerald-500/40 transition-all">
             <div className="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center">
               <Zap className="w-5 h-5" />
@@ -199,10 +209,12 @@ export const MyHistoryPage: React.FC<MyHistoryPageProps> = ({
               <span>React</span> • <span>TypeScript</span> • <span>TailwindCSS</span> • <span>Vite</span> • <span>SEO</span>
             </div>
           </div>
+          </ScrollReveal>
         </div>
       </div>
 
       {/* 4. Competencies & Tech Stack Tags */}
+      <ScrollReveal variant="blur-in" duration={700}>
       <div className="p-6 rounded-xl bg-[#0c0e14] border border-white/[0.08] space-y-3">
         <div className="text-xs font-mono text-neutral-400 uppercase tracking-wider">
           {t('about_stack')}
@@ -234,8 +246,10 @@ export const MyHistoryPage: React.FC<MyHistoryPageProps> = ({
           ))}
         </div>
       </div>
+      </ScrollReveal>
 
       {/* 5. Architectural Philosophy */}
+      <ScrollReveal variant="slide-up" duration={700}>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="p-5 rounded-xl bg-[#0c0e14] border border-white/[0.06] space-y-2">
           <div className="text-[10px] font-mono uppercase text-sky-400 tracking-wider">
@@ -273,6 +287,7 @@ export const MyHistoryPage: React.FC<MyHistoryPageProps> = ({
           </p>
         </div>
       </div>
+      </ScrollReveal>
     </div>
   );
 };
