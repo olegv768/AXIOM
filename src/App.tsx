@@ -11,7 +11,7 @@ import { DashboardResults } from './components/analyzer/DashboardResults';
 import { QueryHistoryPage } from './components/pages/QueryHistoryPage';
 import { MyHistoryPage } from './components/pages/MyHistoryPage';
 import { SpatialBackground } from './components/ui/SpatialBackground';
-import { CustomCursor } from './components/ui/CustomCursor';
+
 
 const STORAGE_KEY_HISTORY = 'axiom_validator_history_v1';
 const LEGACY_STORAGE_KEY_HISTORY = 'antigravity_validator_history_v1';
@@ -150,8 +150,7 @@ export function App() {
 
   return (
     <div className="relative min-h-screen text-neutral-200 flex flex-col justify-between selection:bg-white/20 selection:text-white theme-transition" style={{ backgroundColor: 'var(--bg-body)', color: 'var(--text-primary)' }}>
-      {/* Precision Custom Pointer */}
-      <CustomCursor />
+
 
       {/* Spatial Interactive Background Grid & Coordinates */}
       <SpatialBackground />
