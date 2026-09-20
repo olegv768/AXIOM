@@ -6,6 +6,7 @@ import { UniquenessGauge } from '../ui/UniquenessGauge';
 import { ViabilityRadar } from '../ui/ViabilityRadar';
 import { SimilarWebsitesShowcase } from './SimilarWebsitesShowcase';
 import { VentureDeepDive } from './VentureDeepDive';
+import { StartupStressLab } from './StartupStressLab';
 import { NeonButton } from '../ui/NeonButton';
 import {
   Copy,
@@ -15,7 +16,9 @@ import {
   AlertTriangle,
   Lightbulb,
   ShieldAlert,
-  Globe
+  Globe,
+  Crosshair,
+  Activity
 } from 'lucide-react';
 
 interface DashboardResultsProps {
@@ -50,7 +53,7 @@ export const DashboardResults: React.FC<DashboardResultsProps> = ({ report, onRe
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="text-[10px] font-mono uppercase tracking-wider text-neutral-400">
-              AUDIT REPORT • {report.targetMarket}
+              ANALYSIS • {report.targetMarket}
             </span>
             <span className="text-neutral-600">/</span>
             <span className="text-[10px] font-mono text-neutral-400">
@@ -60,7 +63,7 @@ export const DashboardResults: React.FC<DashboardResultsProps> = ({ report, onRe
               <>
                 <span className="text-neutral-600">/</span>
                 <span className="text-[10px] font-mono uppercase text-emerald-400">
-                  {report.sourceProvider === 'gemini_search' ? '● GOOGLE SEARCH LIVE' : '● CURATED BENCHMARK'}
+                  {report.sourceProvider === 'gemini_search' ? '● LIVE SEARCH' : '● BENCHMARK'}
                 </span>
               </>
             )}
@@ -126,12 +129,28 @@ export const DashboardResults: React.FC<DashboardResultsProps> = ({ report, onRe
 
             <div className="mt-4 p-3 rounded-lg bg-[#11141c] border border-white/[0.06]">
               <div className="text-xs text-neutral-300 leading-relaxed font-sans">
-                <span className="font-mono text-neutral-400 uppercase text-[10px] block mb-0.5">Резюме аудитора:</span>
+                <span className="font-mono text-neutral-400 uppercase text-[10px] block mb-0.5">Резюме:</span>
                 {report.quickTakeaway}
               </div>
             </div>
           </Card3D>
         </div>
+      </div>
+
+      {/* Row 1.5: INTERACTIVE STRESS-TEST LAB */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Activity className="w-4 h-4 text-emerald-400" />
+            <h3 className="text-sm font-display font-bold uppercase tracking-wider text-white">
+              Интерактивный стресс-тест жизнеспособности (Viability Stress Lab)
+            </h3>
+          </div>
+          <span className="text-[10px] font-mono text-neutral-400 uppercase tracking-widest">
+            REAL-TIME SCENARIOS • DYNAMIC RADAR
+          </span>
+        </div>
+        <StartupStressLab ideaTitle={report.ideaText.substring(0, 32)} />
       </div>
 
       {/* Row 2: REAL SIMILAR WEBSITES & STARTUPS SHOWCASE */}
@@ -153,7 +172,7 @@ export const DashboardResults: React.FC<DashboardResultsProps> = ({ report, onRe
               Беспристрастная критика (Ruthless Critique)
             </h3>
           </div>
-          <span className="text-[10px] font-mono text-neutral-400">COGNITIVE BIAS AUDIT</span>
+          <span className="text-[10px] font-mono text-neutral-400">COGNITIVE BIAS ANALYSIS</span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
@@ -354,7 +373,7 @@ export const DashboardResults: React.FC<DashboardResultsProps> = ({ report, onRe
 
       {/* Bottom Bar */}
       <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-white/[0.06] text-xs text-neutral-500">
-        <span>Отчет зафиксирован в истории аудита.</span>
+        <span>Отчет сохранён в истории.</span>
         <div className="flex items-center gap-2.5">
           <NeonButton
             variant="primary"
@@ -370,7 +389,7 @@ export const DashboardResults: React.FC<DashboardResultsProps> = ({ report, onRe
             onClick={onReset}
             icon={<RotateCcw className="w-3.5 h-3.5" />}
           >
-            Новый аудит
+            Новый анализ
           </NeonButton>
         </div>
       </div>

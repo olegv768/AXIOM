@@ -1,6 +1,6 @@
-# Antigravity Venture Audit — Startup Idea Validator
+# Axiom — Spatial Startup Validator & Telemetry
 
-> Пространственный AI-валидатор стартап-идей в эстетике **Linear / Apple Pro Hardware** с живым анализом через **Google Gemini**.
+> Пространственный валидатор стартап-идей в эстетике **Linear / VisionOS** с живым анализом через **Google Gemini**.
 
 ## 🚀 Возможности
 

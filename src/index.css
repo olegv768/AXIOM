@@ -3,80 +3,408 @@
 @tailwind utilities;
 
 @layer base {
-  body {
-    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background-color: #07080b;
-    color: #e5e7eb;
-    overflow-x: hidden;
-    letter-spacing: -0.011em;
+  /* ============================= */
+  /* DARK THEME (default)         */
+  /* ============================= */
+  :root,
+  html,
+  html.dark {
+    --bg-body:      #08090b;
+    --bg-nav:       rgba(8, 9, 11, 0.85);
+    --bg-surface:   #0c0e14;
+    --bg-card:      #0f1117;
+    --bg-elevated:  #141720;
+    --bg-input:     #0b0d13;
+
+    --text-primary:   #f3f4f6;
+    --text-secondary: #9ca3af;
+    --text-muted:     #6b7280;
+
+    --border-subtle:  rgba(255, 255, 255, 0.07);
+    --border-mid:     rgba(255, 255, 255, 0.12);
+    --border-active:  rgba(255, 255, 255, 0.22);
+
+    --scrollbar-track: #08090b;
+    --scrollbar-thumb: #22252c;
+    --scrollbar-hover: #343944;
+
+    --accent-cyan: #38bdf8;
+    --accent-emerald: #10b981;
+    --accent-amber: #f59e0b;
+
+    --glow-dot: rgba(255, 255, 255, 0.03);
+    --spatial-grid: rgba(255, 255, 255, 0.03);
   }
 
+  /* ============================= */
+  /* LIGHT THEME                   */
+  /* ============================= */
+  html.light {
+    --bg-body:      #f1f3f7;
+    --bg-nav:       rgba(241, 243, 247, 0.9);
+    --bg-surface:   #ffffff;
+    --bg-card:      #f7f8fb;
+    --bg-elevated:  #edf0f5;
+    --bg-input:     #ffffff;
+
+    --text-primary:   #0d0f14;
+    --text-secondary: #4b5563;
+    --text-muted:     #9ca3af;
+
+    --border-subtle:  rgba(0, 0, 0, 0.08);
+    --border-mid:     rgba(0, 0, 0, 0.14);
+    --border-active:  rgba(0, 0, 0, 0.26);
+
+    --scrollbar-track: #f1f3f7;
+    --scrollbar-thumb: #d1d5db;
+    --scrollbar-hover: #9ca3af;
+
+    --accent-cyan: #0891b2;
+    --accent-emerald: #059669;
+    --accent-amber: #d97706;
+
+    --glow-dot: rgba(0, 0, 0, 0.04);
+    --spatial-grid: rgba(0, 0, 0, 0.04);
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--bg-body);
+    color: var(--text-primary);
+    overflow-x: hidden;
+    letter-spacing: -0.012em;
+    cursor: default;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  /* Display Font (Headings, Statements, Large metrics) */
+  .font-display {
+    font-family: 'Space Grotesk', -apple-system, sans-serif;
+    letter-spacing: -0.035em;
+  }
+
+  /* Editorial Accent Font */
+  .font-editorial {
+    font-family: 'Syne', sans-serif;
+    letter-spacing: -0.025em;
+  }
+
+  /* Monospace Telemetry */
   code, pre, .font-mono {
     font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
-    font-feature-settings: "tnum" 1;
+    font-feature-settings: "tnum" 1, "zero" 1;
+    letter-spacing: -0.02em;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    letter-spacing: -0.025em;
+    font-family: 'Space Grotesk', -apple-system, sans-serif;
+    letter-spacing: -0.03em;
   }
 }
 
-/* 3D Spatial Styles */
-.perspective-container {
-  perspective: 1200px;
+/* =============================== */
+/* THEME-AWARE UTILITY CLASSES     */
+/* =============================== */
+.theme-bg-body     { background-color: var(--bg-body); }
+.theme-bg-surface  { background-color: var(--bg-surface); }
+.theme-bg-card     { background-color: var(--bg-card); }
+.theme-bg-elevated { background-color: var(--bg-elevated); }
+.theme-bg-input    { background-color: var(--bg-input); }
+.theme-text        { color: var(--text-primary); }
+.theme-text-sec    { color: var(--text-secondary); }
+.theme-text-muted  { color: var(--text-muted); }
+.theme-border      { border-color: var(--border-subtle); }
+.theme-border-mid  { border-color: var(--border-mid); }
+
+/* Spatial Glass & Surfaces */
+.spatial-surface {
+  background: var(--bg-surface);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-subtle);
 }
 
-.preserve-3d {
-  transform-style: preserve-3d;
+.spatial-surface-elevated {
+  background: var(--bg-elevated);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-mid);
+  box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.35), inset 0 1px 0 var(--border-subtle);
 }
 
-.backface-hidden {
-  backface-visibility: hidden;
+/* Subtle Technical Hairline Grid */
+.bg-spatial-grid {
+  background-size: 40px 40px;
+  background-image:
+    linear-gradient(to right, var(--spatial-grid) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--spatial-grid) 1px, transparent 1px);
 }
 
-/* Subtle Technical Dot Grid & Carbon Backing */
-.bg-subtle-mesh {
-  background-color: #07080b;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+.bg-dot-matrix {
+  background-image: radial-gradient(var(--glow-dot) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 
-.bg-ambient-cone {
-  background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(255, 255, 255, 0.04), transparent);
-}
-
-/* Machined Hardware Panel */
-.panel-hardware {
-  background: #0d0f15;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.06), 0 20px 40px -15px rgba(0, 0, 0, 0.7);
-}
-
-.panel-subtle {
-  background: #11141c;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-/* Custom Scrollbar */
+/* Custom Minimal Scrollbar */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 4px;
+  height: 4px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #07080b;
+  background: var(--scrollbar-track);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #232733;
-  border-radius: 9999px;
+  background: var(--scrollbar-thumb);
+  border-radius: 2px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #363c4e;
+  background: var(--scrollbar-hover);
 }
 
-/* Radar beam mask with muted monochromatic silver tone */
-.radar-sweep-technical {
-  background: conic-gradient(from 0deg, rgba(255, 255, 255, 0) 0deg, rgba(255, 255, 255, 0.02) 270deg, rgba(255, 255, 255, 0.25) 360deg);
+/* Textarea focus spatial depth */
+textarea:focus {
+  outline: none;
+  border-color: var(--border-active);
+  box-shadow: 0 0 0 1px var(--border-mid), 0 20px 40px -10px rgba(0, 0, 0, 0.4);
+}
+
+/* Button arrow transform micro-interaction */
+.group-btn-arrow:hover .btn-arrow-icon {
+  transform: translate(2px, -2px);
+}
+
+/* Smooth Tabular Figures */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Light theme – invert low-opacity whites to blacks on key elements */
+html.light .theme-card-lum {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.07);
+}
+
+html.light .theme-card-lum:hover {
+  border-color: rgba(0, 0, 0, 0.14);
+}
+
+/* Smooth theme transitions for common elements */
+.theme-transition {
+  transition: background-color 0.25s ease, border-color 0.25s ease, color 0.2s ease;
+}
+
+/* ============================================================ */
+/* LIGHT THEME OVERRIDES FOR HARMONIOUS UI ADAPTATION           */
+/* ============================================================ */
+html.light {
+  color-scheme: light;
+}
+
+html.light .bg-\[\#090b10\],
+html.light .bg-\[\#08090b\],
+html.light .bg-\[\#07080b\],
+html.light .bg-\[\#080a0f\],
+html.light .bg-\[\#090a0f\] {
+  background-color: var(--bg-body) !important;
+}
+
+html.light .bg-\[\#0c0d12\],
+html.light .bg-\[\#0c0e14\],
+html.light .bg-\[\#0d1017\],
+html.light .bg-\[\#0a0d14\],
+html.light .bg-\[\#0e1017\],
+html.light .bg-\[\#0e1016\],
+html.light .bg-\[\#0e1018\],
+html.light .bg-\[\#08090c\],
+html.light .bg-\[\#10131a\],
+html.light .bg-\[\#0b0d12\],
+html.light .bg-\[\#101114\],
+html.light .bg-\[\#111420\],
+html.light .bg-\[\#0c0e16\],
+html.light .bg-obsidian-950,
+html.light .bg-obsidian-900,
+html.light .bg-obsidian-850 {
+  background-color: var(--bg-surface) !important;
+}
+
+html.light .bg-black\/40,
+html.light .bg-black\/50,
+html.light .bg-black\/60,
+html.light .bg-black\/30,
+html.light .bg-black\/20 {
+  background-color: #f8fafc !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+html.light .bg-\[\#121318\],
+html.light .bg-\[\#12141c\],
+html.light .bg-\[\#141620\],
+html.light .bg-\[\#141720\],
+html.light .bg-\[\#161922\],
+html.light .bg-\[\#17191d\],
+html.light .bg-\[\#191b22\],
+html.light .bg-obsidian-800,
+html.light .bg-obsidian-700 {
+  background-color: var(--bg-elevated) !important;
+}
+
+html.light .hover\:bg-\[\#141720\]:hover,
+html.light .hover\:bg-\[\#171920\]:hover,
+html.light .hover\:bg-\[\#20232c\]:hover {
+  background-color: #e2e8f0 !important;
+}
+
+html.light .from-\[\#0e1018\] {
+  --tw-gradient-from: #ffffff !important;
+}
+html.light .to-\[\#08090c\] {
+  --tw-gradient-to: #f1f5f9 !important;
+}
+html.light .from-\[\#111420\] {
+  --tw-gradient-from: #ffffff !important;
+}
+html.light .via-\[\#0c0e16\] {
+  --tw-gradient-stops: var(--tw-gradient-from), #f8fafc, var(--tw-gradient-to) !important;
+}
+html.light .to-\[\#07080b\] {
+  --tw-gradient-to: #f1f5f9 !important;
+}
+
+html.light [class*="border-white\/"] {
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+html.light .border-white\/10,
+html.light .border-white\/15,
+html.light .border-white\/20,
+html.light .border-white\/30,
+html.light .border-white\/40 {
+  border-color: rgba(0, 0, 0, 0.15) !important;
+}
+
+html.light .bg-white\/\[0\.01\],
+html.light .bg-white\/\[0\.02\],
+html.light .bg-white\/\[0\.03\],
+html.light .bg-white\/\[0\.04\],
+html.light .bg-white\/\[0\.05\],
+html.light .bg-white\/5 {
+  background-color: rgba(0, 0, 0, 0.03) !important;
+}
+
+html.light .bg-white\/\[0\.06\],
+html.light .bg-white\/\[0\.08\],
+html.light .bg-white\/\[0\.1\],
+html.light .bg-white\/\[0\.12\],
+html.light .bg-white\/10,
+html.light .bg-white\/15,
+html.light .bg-white\/20 {
+  background-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+html.light h1,
+html.light h2,
+html.light h3,
+html.light h4,
+html.light h5,
+html.light h6 {
+  color: #0f172a !important;
+}
+
+html.light .text-white {
+  color: #0f172a !important;
+}
+html.light .text-white\/90,
+html.light .text-white\/80 {
+  color: #1e293b !important;
+}
+html.light .text-white\/70,
+html.light .text-white\/60 {
+  color: #334155 !important;
+}
+html.light .text-white\/50,
+html.light .text-white\/40 {
+  color: #475569 !important;
+}
+
+html.light .text-neutral-100,
+html.light .text-neutral-200 {
+  color: #0f172a !important;
+}
+
+html.light .text-neutral-300 {
+  color: #1e293b !important;
+}
+
+html.light .text-neutral-400 {
+  color: #334155 !important;
+}
+
+html.light .text-neutral-500 {
+  color: #475569 !important;
+}
+
+/* Ensure primary action buttons and dark badges keep crisp white text in light theme */
+html.light .btn-neon-primary,
+html.light .btn-neon-primary *,
+html.light .btn-neon-primary span,
+html.light button.bg-neutral-900,
+html.light button.bg-neutral-900 *,
+html.light .bg-neutral-900,
+html.light .bg-neutral-900 * {
+  color: #ffffff !important;
+}
+
+/* Hover fixes for light theme */
+html.light .hover\:text-white:hover,
+html.light .group:hover .group-hover\:text-white,
+html.light .group-hover\/input\:text-white {
+  color: #0f172a !important;
+}
+
+html.light textarea,
+html.light input[type="text"],
+html.light input[type="search"] {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: rgba(0, 0, 0, 0.15) !important;
+}
+
+html.light textarea::placeholder,
+html.light input::placeholder {
+  color: #64748b !important;
+  opacity: 1 !important;
+}
+
+html.light input[type="range"] {
+  background-color: #cbd5e1 !important;
+}
+
+html.light svg polygon[stroke="rgba(255, 255, 255, 0.08)"],
+html.light svg line[stroke="rgba(255, 255, 255, 0.08)"],
+html.light svg circle[stroke="rgba(255, 255, 255, 0.06)"],
+html.light svg circle[stroke="rgba(255, 255, 255, 0.08)"] {
+  stroke: rgba(0, 0, 0, 0.15) !important;
+}
+
+html.light svg text[fill="#9ca3af"] {
+  fill: #475569 !important;
+}
+html.light svg text[fill="#ffffff"] {
+  fill: #0f172a !important;
+}
+
+html.light .shadow-2xl,
+html.light .shadow-xl {
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08), 0 4px 12px -2px rgba(0, 0, 0, 0.04) !important;
+}
+
+html.light .shadow-\[0_24px_60px_-15px_rgba\(0\,0\,0\,0\.9\)\] {
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.1) !important;
+}
+
+html.light .shadow-\[0_16px_40px_-10px_rgba\(0\,0\,0\,0\.8\)\] {
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.06) !important;
 }

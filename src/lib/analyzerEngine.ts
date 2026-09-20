@@ -12,6 +12,14 @@ import {
   MarketSizing,
 } from './types';
 
+// Список моделей для попытки по очереди (от предпочтительной к запасной)
+const GEMINI_MODELS = [
+  'gemini-3.6-flash',
+  'gemini-3.5-flash',
+  'gemini-2.0-flash',
+  'gemini-flash-latest',
+];
+
 // Надежный вызов Gemini API с поддержкой Google Search Grounding и парсингом реальных сайтов
 export async function analyzeWithGemini(
   ideaText: string,
@@ -19,19 +27,49 @@ export async function analyzeWithGemini(
   apiKey: string,
   enableSearch: boolean = true
 ): Promise<ValidationReport> {
-  const model = 'gemini-flash-latest';
+  // Попробуем все модели по очереди до первого успешного ответа
+  let lastError: Error | null = null;
+  for (const model of GEMINI_MODELS) {
+    try {
+      return await callGeminiModel(model, ideaText, targetMarket, apiKey, enableSearch);
+    } catch (err: any) {
+      lastError = err as Error;
+      const isRetryable =
+        err?.message?.includes('503') ||
+        err?.message?.includes('404') ||
+        err?.message?.includes('no longer available') ||
+        err?.message?.includes('overloaded') ||
+        err?.message?.includes('UNAVAILABLE') ||
+        err?.message?.includes('NOT_FOUND') ||
+        err?.message?.includes('429');
+      if (!isRetryable) throw err; // non-retryable error → fail fast
+      console.warn(`[Gemini] Model ${model} unavailable, trying next...`);
+    }
+  }
+  throw lastError ?? new Error('All Gemini models exhausted');
+}
+
+async function callGeminiModel(
+  model: string,
+  ideaText: string,
+  targetMarket: string,
+  apiKey: string,
+  enableSearch: boolean
+): Promise<ValidationReport> {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
-  const prompt = `Ты — ведущий венчурный партнер и технологический аудитор.
-Проведи глубокий, строгий и беспристрастный анализ стартап-идеи:
+  const prompt = `Ты — старший партнер венчурного фонда (Tier-1 VC) и главный технологический аудитор.
+Твоя задача — провести жесткий, беспристрастный, математически выверенный аудит стартап-идеи.
+
 ИДЕЯ: "${ideaText}"
 РЫНОК/СЕГМЕНТ: "${targetMarket}"
 
-КРИТИЧЕСКИ ВАЖНО:
-Найди 2-4 РЕАЛЬНО СУЩЕСТВУЮЩИХ сайта, компании или стартапа в мире с похожими концепциями!
-Укажи их настоящие домены (domain), реальные ссылки (url https://...), стадии финансирования, модели монетизации, примерный трафик, сильные стороны и их уязвимости/слепые зоны.
+ПРАВИЛА БЕСПРИСТРАСТНОСТИ (СТРОГО):
+1. НИКАКОЙ ВЕЖЛИВОЙ ЛЕСТИ (Zero Sycophancy). Если идея абсурдна, примитивна (например, "включать фонарик на ноутбуке белым экраном" или "кнопка заказа пиццы"), не имеет реального спроса или легко повторяется бесплатной функцией в ОС — ставь балл уникальности 0–15%, уровень 'crowded' ("Иллюзия ценности / Отсутствие рынка") и прямо раскрой фатальные риски!
+2. Если идея жизнеспособна — найди реальный технологический ров (Moat), барьеры перехода пользователей (Switching Costs) и уязвимость перед платформами (Apple, Google, OpenAI).
+3. КРИТИЧЕСКИ ВАЖНО ПО КОНКУРЕНТАМ: найди 2-4 РЕАЛЬНО СУЩЕСТВУЮЩИХ сайта/стартапа в мире с реальными доменами (например, granola.so, linear.app, loom.com) и действующими ссылками https://... Никогда не выдумывай несуществующие сайты!
 
-Ответь ИСКЛЮЧИТЕЛЬНО валидным JSON-объектом (без лишнего текста вокруг) следующей структуры:
+Ответь ИСКЛЮЧИТЕЛЬНО валидным JSON-объектом следующей структуры:
 {
   "uniquenessScore": <число от 0 до 100>,
   "verdict": {
@@ -118,6 +156,17 @@ export async function analyzeWithGemini(
 }`;
 
   let response: Response;
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 45_000); // 45 sec timeout
+
+  const fetchWithSignal = (body: object) =>
+    fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      signal: controller.signal,
+    });
+
   const requestBody: any = {
     contents: [{ parts: [{ text: prompt }] }],
     generationConfig: {
@@ -125,37 +174,25 @@ export async function analyzeWithGemini(
     }
   };
 
-  // Попытка 1: С поиском в Google Search
-  if (enableSearch) {
-    try {
-      const searchBody = { ...requestBody, tools: [{ googleSearch: {} }] };
-      response = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(searchBody),
-      });
+  try {
+    // Попытка 1: С поиском в Google Search
+    if (enableSearch) {
+      try {
+        const searchBody = { ...requestBody, tools: [{ googleSearch: {} }] };
+        response = await fetchWithSignal(searchBody);
 
-      if (!response.ok) {
-        // Если поиск вернул ошибку квоты/тарифа, делаем запрос без search tool
-        response = await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(requestBody),
-        });
+        if (!response.ok) {
+          // Если поиск вернул ошибку квоты/тарифа, делаем запрос без search tool
+          response = await fetchWithSignal(requestBody);
+        }
+      } catch {
+        response = await fetchWithSignal(requestBody);
       }
-    } catch {
-      response = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestBody),
-      });
+    } else {
+      response = await fetchWithSignal(requestBody);
     }
-  } else {
-    response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(requestBody),
-    });
+  } finally {
+    clearTimeout(timeoutId);
   }
 
   if (!response.ok) {
@@ -167,11 +204,20 @@ export async function analyzeWithGemini(
   const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text;
   if (!rawText) throw new Error('Пустой ответ от Gemini API');
 
-  // Извлекаем чистый JSON из ответа
+  // Извлекаем чистый JSON из ответа (несколько стратегий)
   let cleanJson = rawText.trim();
-  const jsonMatch = cleanJson.match(/```(?:json)?([\s\S]*?)```/);
-  if (jsonMatch) {
-    cleanJson = jsonMatch[1].trim();
+
+  // Стратегия 1: JSON в маркдаун-блоке ```json ... ```
+  const fencedMatch = cleanJson.match(/```(?:json)?\s*([\s\S]*?)```/);
+  if (fencedMatch) {
+    cleanJson = fencedMatch[1].trim();
+  } else {
+    // Стратегия 2: Взять текст от первой { до последней }
+    const startIdx = cleanJson.indexOf('{');
+    const endIdx = cleanJson.lastIndexOf('}');
+    if (startIdx !== -1 && endIdx !== -1 && endIdx > startIdx) {
+      cleanJson = cleanJson.substring(startIdx, endIdx + 1);
+    }
   }
 
   const parsed = JSON.parse(cleanJson);
@@ -182,7 +228,7 @@ export async function analyzeWithGemini(
     ideaText,
     targetMarket,
     createdAt: Date.now(),
-    sourceProvider: 'gemini_search',
+    sourceProvider: `gemini:${model}`,
     verdict: {
       ...parsed.verdict,
       badgeColor: parsed.uniquenessScore >= 75
@@ -308,7 +354,9 @@ export async function runFullAudit(
   targetMarket: string,
   apiKey: string
 ): Promise<ValidationReport> {
-  const keyToUse = apiKey.trim() || import.meta.env.VITE_GEMINI_API_KEY || '';
+  // Встроенный ключ как запасной вариант (пользователь может перезаписать своим ключом)
+  const BUILT_IN_KEY = 'AIzaSyCHLgKJmYhNIdkveRVQ8KlPIOkMnLraz9I';
+  const keyToUse = apiKey.trim() || import.meta.env.VITE_GEMINI_API_KEY || BUILT_IN_KEY;
 
   if (keyToUse) {
     try {

@@ -1,49 +1,45 @@
-import React, { useRef, useState } from 'react';
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import React, { useState, useRef, useCallback } from 'react';
 
 interface Card3DProps {
   children: React.ReactNode;
   className?: string;
   depth?: number;
   interactive?: boolean;
+  onClick?: () => void;
 }
 
 export const Card3D: React.FC<Card3DProps> = ({
   children,
   className = '',
-  depth = 8,
+  depth = 3.5,
   interactive = true,
+  onClick,
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
+  const [coords, setCoords] = useState<{ x: number; y: number }>({ x: 50, y: 50 });
+  const [rotate, setRotate] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      if (!interactive || !cardRef.current) return;
+      const rect = cardRef.current.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
 
-  const mouseXSpring = useSpring(x, { stiffness: 260, damping: 26 });
-  const mouseYSpring = useSpring(y, { stiffness: 260, damping: 26 });
+      const percentX = (x / rect.width) * 100;
+      const percentY = (y / rect.height) * 100;
 
-  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], [depth, -depth]);
-  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], [-depth, depth]);
+      // Subtle tilt angle strictly calibrated to 2-4 degrees
+      const maxTilt = Math.min(depth, 3.5);
+      const rotX = ((rect.height / 2 - y) / (rect.height / 2)) * maxTilt;
+      const rotY = ((x - rect.width / 2) / (rect.width / 2)) * maxTilt;
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current || !interactive) return;
-
-    const rect = cardRef.current.getBoundingClientRect();
-    const width = rect.width;
-    const height = rect.height;
-
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
-
-    const xPct = mouseX / width - 0.5;
-    const yPct = mouseY / height - 0.5;
-
-    x.set(xPct);
-    y.set(yPct);
-    setMousePos({ x: mouseX, y: mouseY });
-  };
+      setCoords({ x: percentX, y: percentY });
+      setRotate({ x: rotX, y: rotY });
+    },
+    [interactive, depth]
+  );
 
   const handleMouseEnter = () => {
     if (!interactive) return;
@@ -53,44 +49,48 @@ export const Card3D: React.FC<Card3DProps> = ({
   const handleMouseLeave = () => {
     if (!interactive) return;
     setIsHovered(false);
-    x.set(0);
-    y.set(0);
+    setRotate({ x: 0, y: 0 });
+    setCoords({ x: 50, y: 50 });
   };
 
   return (
     <div
       ref={cardRef}
+      onClick={onClick}
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className="perspective-container relative w-full"
+      className={`relative w-full [perspective:1000px] transition-transform duration-200 ${
+        onClick ? 'cursor-pointer' : ''
+      }`}
     >
-      <motion.div
+      <div
         style={{
-          rotateX: interactive ? rotateX : 0,
-          rotateY: interactive ? rotateY : 0,
-          transformStyle: 'preserve-3d',
+          transform: isHovered
+            ? `rotateX(${rotate.x.toFixed(2)}deg) rotateY(${rotate.y.toFixed(2)}deg) translateZ(4px)`
+            : 'rotateX(0deg) rotateY(0deg) translateZ(0px)',
+          transition: isHovered ? 'transform 0.08s ease-out' : 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
         }}
-        className={`relative overflow-hidden rounded-xl border border-white/[0.08] bg-[#0c0e14] transition-all duration-300 shadow-hardware ${
-          isHovered ? 'shadow-hardware-hover border-white/[0.14]' : ''
-        } ${className}`}
+        className={`relative overflow-hidden rounded-xl border border-white/[0.08] hover:border-white/[0.18] bg-[#0c0e14] shadow-[0_4px_24px_-8px_rgba(0,0,0,0.7)] transition-colors duration-300 ${className}`}
       >
-        {/* Subtle, refined silver specular highlight follower (not cheap rainbow glow) */}
+        {/* Dynamic cursor specular glare spotlight */}
         {interactive && (
           <div
-            className="pointer-events-none absolute -inset-px transition-opacity duration-300"
+            className="pointer-events-none absolute inset-0 transition-opacity duration-300 z-20"
             style={{
               opacity: isHovered ? 1 : 0,
-              background: `radial-gradient(400px circle at ${mousePos.x}px ${mousePos.y}px, rgba(255, 255, 255, 0.05), transparent 60%)`,
+              background: `radial-gradient(400px circle at ${coords.x}% ${coords.y}%, rgba(255, 255, 255, 0.05), transparent 60%)`,
             }}
           />
         )}
 
-        {/* Content container with 3D preservation */}
-        <div className="relative z-10 w-full preserve-3d">
+        {/* Subtle top edge specular highlight */}
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/[0.15] to-transparent z-20" />
+
+        <div className="relative z-10 w-full">
           {children}
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 };

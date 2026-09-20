@@ -1,37 +1,57 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ValidationReport } from './lib/types';
 import { runFullAudit } from './lib/analyzerEngine';
-import { Navbar } from './components/layout/Navbar';
+import { CURATED_QUERIES } from './lib/curatedQueries';
+import { Navbar, NavView } from './components/layout/Navbar';
+import { Footer } from './components/layout/Footer';
 import { HeroInput } from './components/analyzer/HeroInput';
 import { CinematicScanner } from './components/analyzer/CinematicScanner';
 import { DashboardResults } from './components/analyzer/DashboardResults';
-import { HistoryDrawer } from './components/analyzer/HistoryDrawer';
+import { QueryHistoryPage } from './components/pages/QueryHistoryPage';
+import { MyHistoryPage } from './components/pages/MyHistoryPage';
+import { SpatialBackground } from './components/ui/SpatialBackground';
+import { CustomCursor } from './components/ui/CustomCursor';
 
-const STORAGE_KEY_HISTORY = 'antigravity_validator_history_v1';
+const STORAGE_KEY_HISTORY = 'axiom_validator_history_v1';
+const LEGACY_STORAGE_KEY_HISTORY = 'antigravity_validator_history_v1';
+const STORAGE_KEY_STARRED = 'axiom_validator_starred_v1';
+const LEGACY_STORAGE_KEY_STARRED = 'antigravity_validator_starred_v1';
+
+export type AppView = 'input' | 'scanning' | 'results' | 'query_history' | 'my_history';
 
 export function App() {
-  const [view, setView] = useState<'input' | 'scanning' | 'results'>('input');
-  const [pendingAnalysis, setPendingAnalysis] = useState({ idea: '', market: '', apiKey: '' });
+  const [view, setView] = useState<AppView>('input');
   const [currentReport, setCurrentReport] = useState<ValidationReport | null>(null);
   const [history, setHistory] = useState<ValidationReport[]>([]);
-  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [starredIds, setStarredIds] = useState<string[]>([]);
+  const [activeAuditPromise, setActiveAuditPromise] = useState<Promise<ValidationReport> | null>(null);
+  const [draftIdea, setDraftIdea] = useState<{ idea: string; market: string } | null>(null);
 
-  // Load history from LocalStorage
+  // Load history & starred items from LocalStorage
   useEffect(() => {
     try {
-      const savedHistory = localStorage.getItem(STORAGE_KEY_HISTORY);
+      const savedHistory =
+        localStorage.getItem(STORAGE_KEY_HISTORY) ||
+        localStorage.getItem(LEGACY_STORAGE_KEY_HISTORY);
       if (savedHistory) {
         setHistory(JSON.parse(savedHistory));
+      }
+      const savedStarred =
+        localStorage.getItem(STORAGE_KEY_STARRED) ||
+        localStorage.getItem(LEGACY_STORAGE_KEY_STARRED);
+      if (savedStarred) {
+        setStarredIds(JSON.parse(savedStarred));
       }
     } catch (e) {
       console.error('Failed to load local storage data', e);
     }
   }, []);
 
+  // Save report to history
   const saveToHistory = (newReport: ValidationReport) => {
     setHistory((prev) => {
-      const updated = [newReport, ...prev.filter((item) => item.id !== newReport.id)].slice(0, 30);
+      const updated = [newReport, ...prev.filter((item) => item.id !== newReport.id)].slice(0, 50);
       try {
         localStorage.setItem(STORAGE_KEY_HISTORY, JSON.stringify(updated));
       } catch (e) {
@@ -41,31 +61,49 @@ export function App() {
     });
   };
 
-  const handleStartAnalysis = (idea: string, market: string, apiKey: string) => {
-    setPendingAnalysis({ idea, market, apiKey });
+  // Toggle favorite / starred
+  const handleToggleStar = (id: string) => {
+    setStarredIds((prev) => {
+      const updated = prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id];
+      try {
+        localStorage.setItem(STORAGE_KEY_STARRED, JSON.stringify(updated));
+      } catch (e) {
+        console.error('Failed to persist starred items', e);
+      }
+      return updated;
+    });
+  };
+
+  // Start analysis: immediately fire API and pass promise to scanner
+  const handleStartAnalysis = (idea: string, market: string) => {
+    const promise = runFullAudit(idea, market, '');
+    setActiveAuditPromise(promise);
     setView('scanning');
   };
 
-  const handleScanComplete = async () => {
-    const report = await runFullAudit(
-      pendingAnalysis.idea,
-      pendingAnalysis.market,
-      pendingAnalysis.apiKey
-    );
+  // Scanner completes when API promise resolves
+  const handleScanComplete = (report: ValidationReport) => {
     setCurrentReport(report);
     saveToHistory(report);
     setView('results');
   };
 
-  const handleSelectHistoryItem = (report: ValidationReport) => {
+  const handleSelectReport = (report: ValidationReport) => {
     setCurrentReport(report);
     setView('results');
   };
 
+  const handleUseAsTemplate = (idea: string, market: string) => {
+    setDraftIdea({ idea, market });
+    setView('input');
+  };
+
   const handleClearHistory = () => {
     setHistory([]);
+    setStarredIds([]);
     try {
       localStorage.removeItem(STORAGE_KEY_HISTORY);
+      localStorage.removeItem(STORAGE_KEY_STARRED);
     } catch (e) {
       console.error(e);
     }
@@ -81,22 +119,48 @@ export function App() {
       }
       return updated;
     });
+    setStarredIds((prev) => {
+      const updated = prev.filter((item) => item !== id);
+      try {
+        localStorage.setItem(STORAGE_KEY_STARRED, JSON.stringify(updated));
+      } catch (e) {
+        console.error(e);
+      }
+      return updated;
+    });
   };
 
-  return (
-    <div className="relative min-h-screen bg-[#07080b] text-neutral-200 flex flex-col justify-between selection:bg-white/20 selection:text-white">
-      {/* Subtle technical background */}
-      <div className="fixed inset-0 bg-subtle-mesh pointer-events-none z-0" />
-      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-ambient-cone pointer-events-none z-0" />
+  const handleNavigate = (newView: NavView) => {
+    setView(newView);
+  };
 
-      {/* Navigation Header */}
-      <div className="relative z-20">
-        <Navbar
-          historyCount={history.length}
-          onOpenHistory={() => setIsHistoryOpen(true)}
-          onNewIdea={() => setView('input')}
-        />
-      </div>
+  // Combine user history and curated dataset for "История запросов"
+  const allQueries = useMemo(() => {
+    const map = new Map<string, ValidationReport>();
+    // Add user history first
+    history.forEach((h) => map.set(h.id, h));
+    // Add curated queries
+    CURATED_QUERIES.forEach((c) => {
+      if (!map.has(c.id)) {
+        map.set(c.id, c);
+      }
+    });
+    return Array.from(map.values()).sort((a, b) => b.createdAt - a.createdAt);
+  }, [history]);
+
+  return (
+    <div className="relative min-h-screen text-neutral-200 flex flex-col justify-between selection:bg-white/20 selection:text-white theme-transition" style={{ backgroundColor: 'var(--bg-body)', color: 'var(--text-primary)' }}>
+      {/* Precision Custom Pointer */}
+      <CustomCursor />
+
+      {/* Spatial Interactive Background Grid & Coordinates */}
+      <SpatialBackground />
+
+      {/* Header Navigation */}
+      <Navbar
+        currentView={view}
+        onNavigate={handleNavigate}
+      />
 
       {/* Main Dynamic View Area */}
       <main className="relative z-10 flex-1 flex flex-col justify-center">
@@ -107,34 +171,39 @@ export function App() {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.25 }}
+              transition={{ duration: 0.2 }}
             >
               <HeroInput
                 onAnalyze={handleStartAnalysis}
                 isLoading={false}
+                initialIdea={draftIdea?.idea}
+                initialMarket={draftIdea?.market}
               />
             </motion.div>
           )}
 
-          {view === 'scanning' && (
+          {view === 'scanning' && activeAuditPromise && (
             <motion.div
               key="scanning"
               initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 1.02 }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.25 }}
             >
-              <CinematicScanner onComplete={handleScanComplete} />
+              <CinematicScanner
+                auditPromise={activeAuditPromise}
+                onComplete={handleScanComplete}
+              />
             </motion.div>
           )}
 
           {view === 'results' && currentReport && (
             <motion.div
               key="results"
-              initial={{ opacity: 0, y: 12 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.3 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.25 }}
             >
               <DashboardResults
                 report={currentReport}
@@ -142,28 +211,49 @@ export function App() {
               />
             </motion.div>
           )}
+
+          {view === 'query_history' && (
+            <motion.div
+              key="query_history"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2 }}
+            >
+              <QueryHistoryPage
+                allReports={allQueries}
+                onSelectReport={handleSelectReport}
+                onUseAsTemplate={handleUseAsTemplate}
+                onNewAnalysis={() => setView('input')}
+              />
+            </motion.div>
+          )}
+
+          {view === 'my_history' && (
+            <motion.div
+              key="my_history"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2 }}
+            >
+              <MyHistoryPage
+                history={history}
+                starredIds={starredIds}
+                onSelectReport={handleSelectReport}
+                onToggleStar={handleToggleStar}
+                onDeleteOne={handleDeleteOneHistory}
+                onClearAll={handleClearHistory}
+                onNewAnalysis={() => setView('input')}
+              />
+            </motion.div>
+          )}
+
         </AnimatePresence>
       </main>
 
-      {/* Refined Minimalist Footer */}
-      <footer className="relative z-10 py-5 border-t border-white/[0.06] text-xs text-neutral-500 font-mono">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span>Antigravity Venture Audit • Precision Telemetry</span>
-          <span className="text-neutral-400">
-            Powered by Google Gemini Search Grounding
-          </span>
-        </div>
-      </footer>
-
-      {/* History Drawer */}
-      <HistoryDrawer
-        isOpen={isHistoryOpen}
-        onClose={() => setIsHistoryOpen(false)}
-        history={history}
-        onSelect={handleSelectHistoryItem}
-        onClear={handleClearHistory}
-        onDeleteOne={handleDeleteOneHistory}
-      />
+      {/* Upgraded Footer */}
+      <Footer onNavigate={handleNavigate} />
     </div>
   );
 }

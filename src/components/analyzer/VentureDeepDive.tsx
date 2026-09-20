@@ -29,7 +29,7 @@ export const VentureDeepDive: React.FC<VentureDeepDiveProps> = ({
                     Стресс-тест юнит-экономики (Unit Economics)
                   </h3>
                 </div>
-                <span className="text-[10px] font-mono text-neutral-400">FINANCIAL AUDIT</span>
+                <span className="text-[10px] font-mono text-neutral-400">FINANCIAL ANALYSIS</span>
               </div>
 
               <div className="grid grid-cols-2 gap-3 mb-4">

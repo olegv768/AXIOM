@@ -45,7 +45,7 @@ export const HistoryDrawer: React.FC<HistoryDrawerProps> = ({
             <div className="p-4 sm:p-5 border-b border-white/[0.06] flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4 text-neutral-400" />
-                <h3 className="text-sm font-semibold text-white uppercase tracking-wider">История аудитов</h3>
+                <h3 className="text-sm font-semibold text-white uppercase tracking-wider">История анализов</h3>
                 <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/[0.06] text-neutral-400">
                   {history.length}
                 </span>
@@ -76,7 +76,7 @@ export const HistoryDrawer: React.FC<HistoryDrawerProps> = ({
                   <Clock className="w-10 h-10 stroke-[1.5] mb-3 opacity-30 text-neutral-400" />
                   <p className="font-medium text-neutral-300">История пуста</p>
                   <p className="text-[11px] text-neutral-500 mt-1">
-                    Проведенные аудиты сохраняются локально
+                    Анализы сохраняются локально
                   </p>
                 </div>
               ) : (
