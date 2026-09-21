@@ -20,8 +20,7 @@ export const VentureDeepDive: React.FC<VentureDeepDiveProps> = ({
       {/* Unit Economics & Market Sizing Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* Unit Economics Card */}
-        <ScrollReveal variant="fade-right" duration={700}>
-        <div className="lg:col-span-7">
+        <ScrollReveal variant="fade-right" duration={700} className="lg:col-span-7">
           <Card3D depth={5} className="h-full p-5 sm:p-6 flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between pb-3 mb-4 border-b border-white/[0.06]">
@@ -81,12 +80,10 @@ export const VentureDeepDive: React.FC<VentureDeepDiveProps> = ({
               </div>
             </div>
           </Card3D>
-        </div>
         </ScrollReveal>
 
         {/* Market Sizing Card */}
-        <ScrollReveal variant="fade-left" duration={700} delay={150}>
-        <div className="lg:col-span-5">
+        <ScrollReveal variant="fade-left" duration={700} delay={150} className="lg:col-span-5">
           <Card3D depth={5} className="h-full p-5 sm:p-6 flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between pb-3 mb-4 border-b border-white/[0.06]">
@@ -126,7 +123,6 @@ export const VentureDeepDive: React.FC<VentureDeepDiveProps> = ({
               Оценка основана на бенчмарках аналогичных SaaS/Marketplace раундов
             </p>
           </Card3D>
-        </div>
         </ScrollReveal>
       </div>
 
