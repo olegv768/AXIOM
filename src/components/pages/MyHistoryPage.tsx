@@ -25,11 +25,11 @@ interface MyHistoryPageProps {
 
 const DEFAULT_BIO_RU = {
   name: 'Volosov Oleg',
-  tagline: '2 место Infomatrix (Silver Medal) • 3 место Alem AI Hackathon • React, Three.js, D3.js, TypeScript, Tailwind, Vite, SEO',
+  tagline: '3 место Infomatrix Asia (Bronze Medal) • 3 место Alem AI Hackathon • React, Three.js, D3.js, TypeScript, Tailwind, Vite, SEO',
   about: `Я занимаюсь разработкой высокопроизводительных веб-интерфейсов, интерактивных 3D/графических визуализаций и масштабируемых продуктов на стыке искусственного интеллекта.
 
 Мой бэкграунд сформирован победами и призовыми местами в престижных соревнованиях:
-• 🥈 2 место на международном конкурсе Infomatrix (Silver Medal) среди участников со всего мира за системный дизайн, интерфейс и архитектуру.
+• 🥉 3 место на международном конкурсе Infomatrix Asia (Bronze Medal) среди участников со всего мира за системный дизайн, интерфейс и архитектуру.
 • 🥉 3 место на хакатоне Alem AI за разработку и запуск прикладных решений с использованием ИИ на базе Alem AI за 10-дневный хакатон-интенсив.
 
 Ключевой технологический арсенал:
@@ -38,11 +38,11 @@ React, Three.js (3D в вебе, шейдеры), D3.js (сложная визу
 
 const DEFAULT_BIO_EN = {
   name: 'Volosov Oleg',
-  tagline: '2nd Place Infomatrix (Silver Medal) • 3rd Place Alem AI Hackathon • React, Three.js, D3.js, TypeScript, Tailwind, Vite, SEO',
+  tagline: '3rd Place Infomatrix Asia (Bronze Medal) • 3rd Place Alem AI Hackathon • React, Three.js, D3.js, TypeScript, Tailwind, Vite, SEO',
   about: `I engineer high-performance web applications, immersive 3D/data visualizations, and scalable interfaces at the intersection of modern AI.
 
 My background is anchored by top podium finishes in international technical competitions:
-• 🥈 2nd Place at Infomatrix (Silver Medal) among worldwide participants for system design, UX interface, and software architecture.
+• 🥉 3rd Place at Infomatrix Asia (Bronze Medal) among worldwide participants for system design, UX interface, and software architecture.
 • 🥉 3rd Place at Alem AI Hackathon for architecting and shipping production AI solutions in an intensive 10-day sprint.
 
 Core Tech Stack & Competencies:
@@ -111,7 +111,7 @@ export const MyHistoryPage: React.FC<MyHistoryPageProps> = ({
         </h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Card 1: Infomatrix 2nd Place */}
+          {/* Card 1: Infomatrix Asia 3rd Place */}
           <ScrollReveal variant="fade-up" staggerIndex={0} staggerDelay={100}>
           <div className="p-5 rounded-xl bg-[#0c0e14] border border-sky-500/20 relative overflow-hidden space-y-3 group hover:border-sky-500/40 transition-all">
             <div className="w-10 h-10 rounded-lg bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center">
@@ -131,7 +131,7 @@ export const MyHistoryPage: React.FC<MyHistoryPageProps> = ({
               </p>
             </div>
             <div className="pt-2 border-t border-white/[0.04] flex items-center gap-2 text-[10px] font-mono text-neutral-500">
-              <span>International Stage</span> • <span>Silver Medal</span> • <span>System Design</span>
+              <span>International Stage</span> • <span>Bronze Medal</span> • <span>System Design</span>
             </div>
           </div>
           </ScrollReveal>
@@ -229,7 +229,7 @@ export const MyHistoryPage: React.FC<MyHistoryPageProps> = ({
             'TailwindCSS',
             'Vite',
             lang === 'en' ? 'SEO Optimization' : 'SEO-оптимизация',
-            lang === 'en' ? '2nd Place Infomatrix' : '2 место Infomatrix',
+            lang === 'en' ? '3rd Place Infomatrix Asia' : '3 место Infomatrix Asia',
             lang === 'en' ? '3rd Place Alem AI Hackathon' : '3 место Alem AI Hackathon',
             'Autonomous AI Agents',
             'Google Search Grounding',
