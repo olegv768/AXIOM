@@ -113,60 +113,22 @@ export function formatTimeRemainingText(ms: number, lang: 'ru' | 'en' = 'ru'): s
  * Evaluates the current rate limit status without consuming a request token
  */
 export function checkRateLimit(): RateLimitStatus {
-  const now = Date.now();
-  const deviceId = getOrCreateDeviceId();
-  const validTimestamps = getValidTimestamps(now);
-
-  const count = validTimestamps.length;
-  const isAllowed = count < RATE_LIMIT_MAX_REQUESTS;
-  const remaining = Math.max(0, RATE_LIMIT_MAX_REQUESTS - count);
-
-  let msUntilReset = 0;
-  if (!isAllowed && validTimestamps.length > 0) {
-    // The earliest timestamp in the current window determines when the next request is unlocked
-    const oldestTimestamp = validTimestamps[0];
-    const resetTime = oldestTimestamp + RATE_LIMIT_WINDOW_MS;
-    msUntilReset = Math.max(0, resetTime - now);
-  }
-
-  const secondsUntilReset = Math.ceil(msUntilReset / 1000);
-
   return {
-    isAllowed,
-    remaining,
-    total: RATE_LIMIT_MAX_REQUESTS,
-    msUntilReset,
-    secondsUntilReset,
-    formattedTimeRemaining: formatMillisecondsToTime(msUntilReset),
-    deviceId,
+    isAllowed: true,
+    remaining: 999999,
+    total: 999999,
+    msUntilReset: 0,
+    secondsUntilReset: 0,
+    formattedTimeRemaining: '00:00',
+    deviceId: 'unlimited',
   };
 }
 
 /**
- * Attempts to consume one request token. Returns true if allowed, false if limit exceeded.
+ * Attempts to consume one request token. Always returns true (rate limit removed).
  */
 export function recordRequest(): { success: boolean; status: RateLimitStatus } {
-  const currentStatus = checkRateLimit();
-  if (!currentStatus.isAllowed) {
-    return { success: false, status: currentStatus };
-  }
-
-  try {
-    const now = Date.now();
-    const validTimestamps = getValidTimestamps(now);
-    const updated = [...validTimestamps, now];
-    localStorage.setItem(STORAGE_KEY_TIMESTAMPS, JSON.stringify(updated));
-
-    // Notify listeners in this window/tab
-    if (typeof window !== 'undefined') {
-      window.dispatchEvent(new Event(RATE_LIMIT_EVENT));
-    }
-  } catch (e) {
-    console.error('Failed to record rate limit timestamp', e);
-  }
-
-  const newStatus = checkRateLimit();
-  return { success: true, status: newStatus };
+  return { success: true, status: checkRateLimit() };
 }
 
 /**

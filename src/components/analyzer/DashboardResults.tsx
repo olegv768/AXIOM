@@ -65,7 +65,7 @@ export const DashboardResults: React.FC<DashboardResultsProps> = ({ report, onRe
               <>
                 <span className="text-neutral-600">/</span>
                 <span className="text-[10px] font-mono uppercase text-emerald-400">
-                  {report.sourceProvider === 'gemini_search' ? '● LIVE SEARCH' : '● BENCHMARK'}
+                  {report.sourceProvider && report.sourceProvider !== 'offline' ? '● LIVE GEMINI 3.5' : '● BENCHMARK'}
                 </span>
               </>
             )}

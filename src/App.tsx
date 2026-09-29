@@ -75,13 +75,8 @@ export function App() {
     });
   };
 
-  // Start analysis: immediately fire API and pass promise to scanner (enforcing device rate limit)
+  // Start analysis: immediately fire API and pass promise to scanner (unlimited requests)
   const handleStartAnalysis = (idea: string, market: string) => {
-    const rateLimit = recordRequest();
-    if (!rateLimit.success) {
-      console.warn('Device rate limit reached (5 requests / 10 min)');
-      return;
-    }
     const promise = runFullAudit(idea, market, '');
     setActiveAuditPromise(promise);
     setView('scanning');

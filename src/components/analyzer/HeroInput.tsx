@@ -376,63 +376,29 @@ export const HeroInput: React.FC<HeroInputProps> = ({
 
                 {/* Bottom Action Bar */}
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-2">
-                  {/* Device Quota Pill / Rate Limit Status */}
+                  {/* Active Engine Badge */}
                   <div className="flex items-center">
                     <div
-                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-mono border transition-all ${
-                        !rateLimit.isAllowed
-                          ? 'bg-rose-500/10 border-rose-500/30 text-rose-300 shadow-[0_0_15px_rgba(244,63,94,0.12)]'
-                          : rateLimit.remaining <= 1
-                          ? 'bg-amber-500/10 border-amber-500/30 text-amber-300'
-                          : 'bg-white/[0.03] border-white/[0.08] text-neutral-400'
-                      }`}
-                      title={
-                        !rateLimit.isAllowed
-                          ? (lang === 'en' ? 'Limit reached (5/5). Resets in ' : 'Лимит 5/5 исчерпан. Сброс через ') + rateLimit.formattedTimeRemaining
-                          : (lang === 'en' ? 'Device quota: ' : 'Квота устройства: ') + `${rateLimit.remaining}/${rateLimit.total} (10m window)`
-                      }
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-mono border border-emerald-500/20 bg-emerald-500/5 text-emerald-400"
                     >
-                      <span
-                        className={`w-2 h-2 rounded-full ${
-                          !rateLimit.isAllowed
-                            ? 'bg-rose-400 animate-pulse'
-                            : rateLimit.remaining <= 1
-                            ? 'bg-amber-400'
-                            : 'bg-emerald-400'
-                        }`}
-                      />
-                      <span>
-                        {!rateLimit.isAllowed ? (
-                          <span className="flex items-center gap-1.5 font-bold text-rose-300">
-                            <Timer className="w-3.5 h-3.5" />
-                            {t('hero_rate_limit_locked')} · {rateLimit.formattedTimeRemaining}
-                          </span>
-                        ) : (
-                          <span>
-                            {t('hero_rate_limit_remaining').replace('{remaining}', rateLimit.remaining.toString())}
-                          </span>
-                        )}
+                      <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                      <span className="tracking-wider uppercase font-semibold">
+                        Gemini 3.5 Flash · Live
                       </span>
                     </div>
                   </div>
 
                   {/* Primary CTA with animated arrow */}
                   <NeonButton
-                    variant={!rateLimit.isAllowed ? 'secondary' : 'primary'}
+                    variant="primary"
                     size="lg"
                     type="submit"
                     isLoading={isLoading}
-                    disabled={!rateLimit.isAllowed}
-                    showArrow={rateLimit.isAllowed}
-                    className={`w-full sm:w-auto font-display uppercase tracking-tight ${
-                      !rateLimit.isAllowed ? 'opacity-50 cursor-not-allowed border-rose-500/30 text-rose-300' : ''
-                    }`}
+                    disabled={isLoading}
+                    showArrow={true}
+                    className="w-full sm:w-auto font-display uppercase tracking-tight"
                   >
-                    <span>
-                      {!rateLimit.isAllowed
-                        ? t('hero_rate_limit_available_in').replace('{time}', rateLimit.formattedTimeRemaining)
-                        : t('hero_submit')}
-                    </span>
+                    <span>{t('hero_submit')}</span>
                   </NeonButton>
                 </div>
               </form>
