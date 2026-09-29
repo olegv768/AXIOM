@@ -48,6 +48,10 @@ export const TRANSLATIONS = {
     hero_status_idle: 'СИСТЕМА ГОТОВА',
     hero_presets_label: 'ПРЕСЕТЫ / 04 БЕНЧМАРКА',
     hero_presets_click: 'КЛИКНИТЕ ДЛЯ ЗАПОЛНЕНИЯ',
+    hero_rate_limit_exceeded: 'Превышен лимит: максимум 5 запросов за 10 минут с одного устройства. Повторите через {time}.',
+    hero_rate_limit_available_in: 'Доступно через {time}',
+    hero_rate_limit_remaining: 'Квота устройства: {remaining}/5 за 10 мин',
+    hero_rate_limit_locked: 'ЛИМИТ 5/5 ИСЧЕРПАН',
 
     // How it works
     how_label: 'АРХИТЕКТУРА СИСТЕМЫ',
@@ -176,6 +180,10 @@ export const TRANSLATIONS = {
     hero_status_idle: 'SYSTEM READY',
     hero_presets_label: 'PRESETS / 04 BENCHMARKS',
     hero_presets_click: 'CLICK TO FILL',
+    hero_rate_limit_exceeded: 'Rate limit exceeded: maximum 5 audits per 10 minutes per device. Try again in {time}.',
+    hero_rate_limit_available_in: 'Available in {time}',
+    hero_rate_limit_remaining: 'Device quota: {remaining}/5 per 10m',
+    hero_rate_limit_locked: 'RATE LIMIT REACHED (5/5)',
 
     // How it works
     how_label: 'SYSTEM ARCHITECTURE',

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ValidationReport } from './lib/types';
 import { runFullAudit } from './lib/analyzerEngine';
+import { recordRequest } from './lib/rateLimiter';
 import { CURATED_QUERIES } from './lib/curatedQueries';
 import { Navbar, NavView } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
@@ -74,8 +75,13 @@ export function App() {
     });
   };
 
-  // Start analysis: immediately fire API and pass promise to scanner
+  // Start analysis: immediately fire API and pass promise to scanner (enforcing device rate limit)
   const handleStartAnalysis = (idea: string, market: string) => {
+    const rateLimit = recordRequest();
+    if (!rateLimit.success) {
+      console.warn('Device rate limit reached (5 requests / 10 min)');
+      return;
+    }
     const promise = runFullAudit(idea, market, '');
     setActiveAuditPromise(promise);
     setView('scanning');
