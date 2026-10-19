@@ -375,19 +375,7 @@ export const HeroInput: React.FC<HeroInputProps> = ({
                 </AnimatePresence>
 
                 {/* Bottom Action Bar */}
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-2">
-                  {/* Active Engine Badge */}
-                  <div className="flex items-center">
-                    <div
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-mono border border-emerald-500/20 bg-emerald-500/5 text-emerald-400"
-                    >
-                      <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                      <span className="tracking-wider uppercase font-semibold">
-                        Gemini 3.5 Flash · Live
-                      </span>
-                    </div>
-                  </div>
-
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3 pt-2">
                   {/* Primary CTA with animated arrow */}
                   <NeonButton
                     variant="primary"
