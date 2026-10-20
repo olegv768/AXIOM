@@ -18,7 +18,10 @@ import {
   Globe,
   Sliders,
   CheckCircle2,
-  Timer
+  Timer,
+  Smartphone,
+  ExternalLink,
+  QrCode
 } from 'lucide-react';
 import { useRateLimit } from '../../lib/rateLimiter';
 
@@ -257,139 +260,198 @@ export const HeroInput: React.FC<HeroInputProps> = ({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.15 }}
-          className="relative max-w-3xl mx-auto text-left"
+          className="relative max-w-4xl mx-auto text-left"
         >
-
-          <div
-            ref={cardRef}
-            onMouseMove={handleMouseMove}
-            className="relative group/input"
-          >
-            {/* Subtle Specular Glow Rim */}
+          <div className="flex flex-col lg:flex-row items-stretch gap-4">
             <div
-              className="absolute -inset-[1px] rounded-2xl opacity-0 group-hover/input:opacity-100 transition-opacity duration-500 pointer-events-none"
-              style={{
-                background: `radial-gradient(450px circle at ${glowPos.x}% ${glowPos.y}%, rgba(255,255,255,0.12), transparent 50%)`,
-              }}
-            />
-
-            {/* Container Card */}
-            <div
-              className={`relative rounded-2xl border transition-all duration-300 overflow-hidden ${
-                isFocused
-                  ? 'border-white/30 bg-[#0e1017] shadow-[0_24px_60px_-15px_rgba(0,0,0,0.9)]'
-                  : 'border-white/[0.1] bg-[#0c0d12] shadow-[0_16px_40px_-10px_rgba(0,0,0,0.8)]'
-              }`}
+              ref={cardRef}
+              onMouseMove={handleMouseMove}
+              className="relative group/input flex-1 min-w-0"
             >
-              <form onSubmit={handleSubmit} className="p-5 sm:p-6 space-y-4">
-                {/* Header: Segment Selector + Technical Status */}
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-white/[0.06]">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-mono uppercase tracking-widest text-neutral-400">
-                      IDEA / 01
-                    </span>
-                    <span className="text-neutral-600">→</span>
-                    <span className="text-[10px] font-mono text-neutral-400 uppercase tracking-widest">
-                      {t('hero_market_label')}
-                    </span>
+              {/* Subtle Specular Glow Rim */}
+              <div
+                className="absolute -inset-[1px] rounded-2xl opacity-0 group-hover/input:opacity-100 transition-opacity duration-500 pointer-events-none"
+                style={{
+                  background: `radial-gradient(450px circle at ${glowPos.x}% ${glowPos.y}%, rgba(255,255,255,0.12), transparent 50%)`,
+                }}
+              />
+
+              {/* Container Card */}
+              <div
+                className={`relative rounded-2xl border transition-all duration-300 overflow-hidden ${
+                  isFocused
+                    ? 'border-white/30 bg-[#0e1017] shadow-[0_24px_60px_-15px_rgba(0,0,0,0.9)]'
+                    : 'border-white/[0.1] bg-[#0c0d12] shadow-[0_16px_40px_-10px_rgba(0,0,0,0.8)]'
+                }`}
+              >
+                <form onSubmit={handleSubmit} className="p-5 sm:p-6 space-y-4">
+                  {/* Header: Segment Selector + Technical Status */}
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-white/[0.06]">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-mono uppercase tracking-widest text-neutral-400">
+                        IDEA / 01
+                      </span>
+                      <span className="text-neutral-600">→</span>
+                      <span className="text-[10px] font-mono text-neutral-400 uppercase tracking-widest">
+                        {t('hero_market_label')}
+                      </span>
+                    </div>
+
+                    {/* Market Pills */}
+                    <div className="flex items-center gap-1 flex-wrap">
+                      {TARGET_MARKETS.map((market) => (
+                        <button
+                          key={market}
+                          type="button"
+                          onClick={() => setTargetMarket(market)}
+                          className={`relative px-2.5 py-1 rounded-md text-xs font-mono transition-colors ${
+                            targetMarket === market
+                              ? 'text-white bg-white/[0.12] border border-white/[0.18]'
+                              : 'text-neutral-400 hover:text-neutral-200 border border-transparent'
+                          }`}
+                        >
+                          {market}
+                        </button>
+                      ))}
+                    </div>
                   </div>
 
-                  {/* Market Pills */}
-                  <div className="flex items-center gap-1 flex-wrap">
-                    {TARGET_MARKETS.map((market) => (
-                      <button
-                        key={market}
-                        type="button"
-                        onClick={() => setTargetMarket(market)}
-                        className={`relative px-2.5 py-1 rounded-md text-xs font-mono transition-colors ${
-                          targetMarket === market
-                            ? 'text-white bg-white/[0.12] border border-white/[0.18]'
-                            : 'text-neutral-400 hover:text-neutral-200 border border-transparent'
-                        }`}
+                  {/* Textarea with Animated Placeholder & Character Ring */}
+                  <div className="relative">
+                    <textarea
+                      ref={textareaRef}
+                      value={ideaText}
+                      onChange={(e) => {
+                        setIdeaText(e.target.value);
+                        if (error) setError('');
+                      }}
+                      onFocus={() => setIsFocused(true)}
+                      onBlur={() => setIsFocused(false)}
+                      rows={4}
+                      placeholder={animatedPlaceholder + (ideaText.length === 0 ? '|' : '')}
+                      className="w-full bg-[#12141c]/80 border border-white/[0.08] rounded-xl p-4 pr-14 text-white placeholder-neutral-500/70 text-sm focus:border-white/30 transition-all resize-none font-normal leading-relaxed"
+                      maxLength={maxChars}
+                    />
+
+                    {/* SVG Telemetry Char Counter Ring */}
+                    <div className="absolute right-3.5 bottom-3.5 flex items-center justify-center">
+                      <svg width="34" height="34" viewBox="0 0 36 36" className="transform -rotate-90">
+                        <circle
+                          cx="18"
+                          cy="18"
+                          r="14"
+                          fill="none"
+                          stroke="rgba(255,255,255,0.06)"
+                          strokeWidth="2.5"
+                        />
+                        <circle
+                          cx="18"
+                          cy="18"
+                          r="14"
+                          fill="none"
+                          stroke={ringColor}
+                          strokeWidth="2.5"
+                          strokeDasharray={circumference}
+                          strokeDashoffset={strokeDashoffset}
+                          strokeLinecap="round"
+                          className="transition-all duration-300"
+                        />
+                      </svg>
+                      <span className="absolute text-[9px] font-mono text-neutral-400 tabular-nums">
+                        {ideaText.length > 0 ? ideaText.length : ''}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Validation Error Banner */}
+                  <AnimatePresence>
+                    {error && (
+                      <motion.p
+                        initial={{ opacity: 0, y: -4, height: 0 }}
+                        animate={{ opacity: 1, y: 0, height: 'auto' }}
+                        exit={{ opacity: 0, y: -4, height: 0 }}
+                        className="text-xs text-rose-400 font-mono"
                       >
-                        {market}
-                      </button>
-                    ))}
+                        [ERR] {error}
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
+
+                  {/* Bottom Action Bar */}
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3 pt-2">
+                    {/* Primary CTA with animated arrow */}
+                    <NeonButton
+                      variant="primary"
+                      size="lg"
+                      type="submit"
+                      isLoading={isLoading}
+                      disabled={isLoading}
+                      showArrow={true}
+                      className="w-full sm:w-auto font-display uppercase tracking-tight"
+                    >
+                      <span>{t('hero_submit')}</span>
+                    </NeonButton>
                   </div>
-                </div>
+                </form>
+              </div>
+            </div>
 
-                {/* Textarea with Animated Placeholder & Character Ring */}
-                <div className="relative">
-                  <textarea
-                    ref={textareaRef}
-                    value={ideaText}
-                    onChange={(e) => {
-                      setIdeaText(e.target.value);
-                      if (error) setError('');
-                    }}
-                    onFocus={() => setIsFocused(true)}
-                    onBlur={() => setIsFocused(false)}
-                    rows={4}
-                    placeholder={animatedPlaceholder + (ideaText.length === 0 ? '|' : '')}
-                    className="w-full bg-[#12141c]/80 border border-white/[0.08] rounded-xl p-4 pr-14 text-white placeholder-neutral-500/70 text-sm focus:border-white/30 transition-all resize-none font-normal leading-relaxed"
-                    maxLength={maxChars}
-                  />
+            {/* Side QR Code Card */}
+            <div className="relative group/qr w-full lg:w-56 shrink-0">
+              {/* Subtle Specular Glow Rim */}
+              <div
+                className="absolute -inset-[1px] rounded-2xl opacity-0 group-hover/qr:opacity-100 transition-opacity duration-500 pointer-events-none"
+                style={{
+                  background: 'radial-gradient(240px circle at 50% 50%, rgba(255,255,255,0.14), transparent 70%)',
+                }}
+              />
 
-                  {/* SVG Telemetry Char Counter Ring */}
-                  <div className="absolute right-3.5 bottom-3.5 flex items-center justify-center">
-                    <svg width="34" height="34" viewBox="0 0 36 36" className="transform -rotate-90">
-                      <circle
-                        cx="18"
-                        cy="18"
-                        r="14"
-                        fill="none"
-                        stroke="rgba(255,255,255,0.06)"
-                        strokeWidth="2.5"
-                      />
-                      <circle
-                        cx="18"
-                        cy="18"
-                        r="14"
-                        fill="none"
-                        stroke={ringColor}
-                        strokeWidth="2.5"
-                        strokeDasharray={circumference}
-                        strokeDashoffset={strokeDashoffset}
-                        strokeLinecap="round"
-                        className="transition-all duration-300"
-                      />
-                    </svg>
-                    <span className="absolute text-[9px] font-mono text-neutral-400 tabular-nums">
-                      {ideaText.length > 0 ? ideaText.length : ''}
+              <div className="relative h-full rounded-2xl border border-white/[0.1] bg-[#0c0d12] shadow-[0_16px_40px_-10px_rgba(0,0,0,0.8)] p-4 sm:p-5 flex flex-col sm:flex-row lg:flex-col items-center justify-between gap-3 text-center sm:text-left lg:text-center transition-all duration-300 hover:border-white/20">
+                {/* Header */}
+                <div className="w-full flex items-center justify-between pb-2.5 border-b border-white/[0.06]">
+                  <div className="flex items-center gap-1.5">
+                    <Smartphone className="w-3.5 h-3.5 text-neutral-400" />
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-neutral-300">
+                      {lang === 'en' ? 'MOBILE' : 'МОБИЛЬНАЯ'}
                     </span>
                   </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    <span className="text-[9px] font-mono text-emerald-400 font-bold uppercase tracking-wider">LIVE</span>
+                  </div>
                 </div>
 
-                {/* Validation Error Banner */}
-                <AnimatePresence>
-                  {error && (
-                    <motion.p
-                      initial={{ opacity: 0, y: -4, height: 0 }}
-                      animate={{ opacity: 1, y: 0, height: 'auto' }}
-                      exit={{ opacity: 0, y: -4, height: 0 }}
-                      className="text-xs text-rose-400 font-mono"
-                    >
-                      [ERR] {error}
-                    </motion.p>
-                  )}
-                </AnimatePresence>
+                {/* QR Image */}
+                <a
+                  href="https://axiom-x.vercel.app/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="relative p-2 bg-white rounded-xl shadow-md transition-all duration-300 group-hover/qr:scale-[1.03] group-hover/qr:shadow-xl group-hover/qr:shadow-white/10 block cursor-pointer shrink-0 my-auto"
+                  title="axiom-x.vercel.app"
+                >
+                  <img
+                    src="/qr-code.png"
+                    alt="Axiom Mobile QR Code"
+                    className="w-28 h-28 sm:w-32 sm:h-32 lg:w-36 lg:h-36 object-contain block"
+                  />
+                </a>
 
-                {/* Bottom Action Bar */}
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3 pt-2">
-                  {/* Primary CTA with animated arrow */}
-                  <NeonButton
-                    variant="primary"
-                    size="lg"
-                    type="submit"
-                    isLoading={isLoading}
-                    disabled={isLoading}
-                    showArrow={true}
-                    className="w-full sm:w-auto font-display uppercase tracking-tight"
+                {/* Footer Info */}
+                <div className="w-full pt-1 flex flex-col items-center sm:items-start lg:items-center gap-1">
+                  <a
+                    href="https://axiom-x.vercel.app/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-[11px] font-mono text-neutral-300 hover:text-white transition-colors"
                   >
-                    <span>{t('hero_submit')}</span>
-                  </NeonButton>
+                    <span>axiom-x.vercel.app</span>
+                    <ExternalLink className="w-3 h-3 text-neutral-500 group-hover/qr:text-neutral-300" />
+                  </a>
+                  <p className="text-[10px] font-mono text-neutral-500">
+                    {lang === 'en' ? 'Scan with phone camera' : 'Сканируй для телефона'}
+                  </p>
                 </div>
-              </form>
+              </div>
             </div>
           </div>
 
